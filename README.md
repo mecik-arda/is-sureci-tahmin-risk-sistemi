@@ -1,5 +1,7 @@
 # AI Destekli İş Süreci Tahmin ve Gecikme Risk Sistemi
 
+> Bu proje, Soft İş Çözümleri bünyesinde hazırlanmış bir staj projesidir.
+
 Geçmiş süreç kayıtlarından gecikme riski, tahmini tamamlanma süresi ve
 açıklanabilir karar desteği sağlayan tamamen yerel çalışan full stack
 uygulama.
