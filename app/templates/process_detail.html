@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Süreç Detayı - İş Süreci Tahmin ve Gecikme Risk Sistemi{% endblock %}
+
+{% block content %}
+    <nav class="back-link" aria-label="Geri dönüş">
+        <a href="/processes">&laquo; Süreç Listesine Dön</a>
+    </nav>
+
+    <h1>Süreç Detayı</h1>
+    <p class="page-lead">
+        Süreç No: <strong id="process-external-id">Yükleniyor...</strong>
+        <span class="page-lead__sep" aria-hidden="true">|</span>
+        <span id="process-type" class="muted"></span>
+    </p>
+
+    <div id="process-not-found" class="empty-state" style="display:none">
+        Süreç bulunamadı.
+    </div>
+
+    <div id="process-loading" class="empty-state">Süreç bilgileri yükleniyor...</div>
+
+    <div id="process-body" style="display:none">
+
+        <section id="prediction-card" class="section section--predict" aria-labelledby="prediction-card-heading">
+            <div class="section__head">
+                <h2 id="prediction-card-heading">Tahmin</h2>
+                <span class="section__tag section__tag--blue">Model çıktısı</span>
+            </div>
+
+            <div class="prediction-grid">
+                <article class="card prediction-hero">
+                    <span class="prediction-hero__label">Gecikme Olasılığı</span>
+                    <span class="prediction-hero__value" id="pred-probability">&mdash;</span>
+                    <span class="prediction-hero__verdict" id="pred-verdict"></span>
+                </article>
+
+                <article class="card prediction-meta">
+                    <dl class="meta-list">
+                        <div class="meta-list__row">
+                            <dt>Model Tahmini</dt>
+                            <dd id="pred-decision">Henüz tahmin yok</dd>
+                        </div>
+                        <div class="meta-list__row">
+                            <dt>Risk Skoru</dt>
+                            <dd id="pred-risk-score">—</dd>
+                        </div>
+                        <div class="meta-list__row">
+                            <dt>Risk Seviyesi</dt>
+                            <dd id="pred-risk-level">—</dd>
+                        </div>
+                        <div class="meta-list__row">
+                            <dt>Karar Eşiği</dt>
+                            <dd id="pred-threshold">&mdash;</dd>
+                        </div>
+                        <div class="meta-list__row">
+                            <dt>Tahmini Tamamlanma Süresi</dt>
+                            <dd id="pred-hours">&mdash;</dd>
+                        </div>
+                        <div class="meta-list__row">
+                            <dt>Tahmin Zamanı</dt>
+                            <dd id="pred-at">&mdash;</dd>
+                        </div>
+                        <div class="meta-list__row">
+                            <dt>Model Sürümü</dt>
+                            <dd id="pred-model-version">&mdash;</dd>
+                        </div>
+                    </dl>
+                </article>
+            </div>
+
+            <div id="prediction-empty" class="empty-state" style="display:none">
+                Henüz tahmin yok
+            </div>
+            <div id="prediction-action" class="empty-state" style="display:none">
+                <p>Bu süreç için henüz tahmin üretilmemiş.</p>
+                <button type="button" id="btn-predict" class="btn btn--primary">Tahmin Üret</button>
+                <span id="prediction-create-status" aria-live="polite"></span>
+                <div id="prediction-create-error" class="empty-state empty-state--warn" style="display:none"></div>
+            </div>
+            <div id="prediction-no-sla" class="empty-state empty-state--warn" style="display:none">
+                SLA tanımlı değil &mdash; gecikme riski üretilemez
+            </div>
+        </section>
+
+        <section id="prediction-history-panel" class="section" aria-labelledby="prediction-history-heading">
+            <div class="section__head"><h2 id="prediction-history-heading">Tahmin Geçmişi</h2></div>
+            <p class="section__hint">Açılış tahminleri ve varsayımsal senaryolar bağlam etiketiyle ayrı gösterilir.</p>
+            <article class="card card--flush">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead><tr><th scope="col">Zaman</th><th scope="col">Bağlam</th><th scope="col">Model</th><th scope="col">Olasılık</th><th scope="col">Risk Skoru</th><th scope="col">Karar</th></tr></thead>
+                        <tbody id="history-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="history-empty" class="empty-state" style="display:none">Tahmin geçmişi bulunamadı.</div>
+            </article>
+        </section>
+
+        <div class="dual-card">
+            <section id="opening-fields" class="section" aria-labelledby="opening-heading">
+                <div class="section__head">
+                    <h2 id="opening-heading">Tahmin Anındaki Bilgiler</h2>
+                    <span class="section__tag section__tag--blue">V1 açılış featureları</span>
+                </div>
+                <p class="warning warning--info">
+                    Bu tahmin yalnız açılış anındaki bilgilere dayanır.
+                </p>
+                <article class="card card--flush">
+                    <div class="table-wrap">
+                        <table class="data-table data-table--pairs">
+                            <thead>
+                                <tr><th scope="col">Alan</th><th scope="col">Değer</th></tr>
+                            </thead>
+                            <tbody id="opening-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div id="opening-empty" class="empty-state" style="display:none">
+                        Açılış anına ait kayıt bulunamadı.
+                    </div>
+                </article>
+            </section>
+
+            <section id="current-fields" class="section" aria-labelledby="current-heading">
+                <div class="section__head">
+                    <h2 id="current-heading">Güncel Süreç Durumu</h2>
+                    <span class="section__tag section__tag--amber">Modele girmez</span>
+                </div>
+                <p class="warning warning--warn">
+                    Bu alanlar modele feature olarak verilmez.
+                </p>
+                <article class="card card--flush">
+                    <div class="table-wrap">
+                        <table class="data-table data-table--pairs">
+                            <thead>
+                                <tr><th scope="col">Alan</th><th scope="col">Değer</th></tr>
+                            </thead>
+                            <tbody id="current-tbody"></tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
+        </div>
+
+        <section id="shap-panel" class="section" aria-labelledby="shap-heading" style="display:none">
+            <div class="section__head">
+                <h2 id="shap-heading">Bu Sürece Özel Risk Faktörleri</h2>
+                <span class="section__tag section__tag--orange">SHAP</span>
+            </div>
+            <p class="warning warning--info">
+                Aşağıdaki faktörler modelin bu süreç için verdiği tahmine katkıyı gösterir.
+                Pozitif değerler riski artıran, negatif değerler riski azaltan faktörlerdir.
+                Bu açıklama neden-sonuç ilişkisi değildir.
+            </p>
+            <article class="card">
+                <div id="shap-bars" class="importance-list"></div>
+                <div id="shap-empty" class="empty-state" style="display:none">
+                    Bu süreç için per-instance XAI bilgisi üretilemedi.
+                </div>
+            </article>
+        </section>
+
+        <section id="xai-panel" class="section" aria-labelledby="xai-heading">
+            <div class="section__head">
+                <h2 id="xai-heading">Modelin Genel Özellik Önemleri</h2>
+                <span class="section__tag section__tag--blue">XAI</span>
+            </div>
+            <p class="warning warning--info">
+                Bu önem sıralaması modelin genel davranışını yansıtır. Bu sürece özel bir açıklama değildir.
+            </p>
+            <article class="card">
+                <div id="xai-bars" class="importance-list"></div>
+                <div id="xai-empty" class="empty-state" style="display:none">
+                    Özellik önem bilgisi bulunamadı.
+                </div>
+            </article>
+        </section>
+
+        <section id="similar-panel" class="section" aria-labelledby="similar-heading">
+            <div class="section__head">
+                <h2 id="similar-heading">Benzer Açılış Yapılan Geçmiş Süreçler</h2>
+                <span class="section__tag section__tag--green">KNN</span>
+            </div>
+            <p class="warning warning--info">
+                Bu süreçler açılış anındaki özellikleri bakımından benzerdir.
+            </p>
+            <article class="card card--flush">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Süreç No</th>
+                                <th scope="col">Tür</th>
+                                <th scope="col">Gerçek Durum</th>
+                                <th scope="col">Süre</th>
+                            </tr>
+                        </thead>
+                        <tbody id="similar-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="similar-empty" class="empty-state" style="display:none">
+                    Benzer süreç bulunamadı.
+                </div>
+            </article>
+        </section>
+
+        <section id="simulation-panel" class="section" aria-labelledby="sim-heading">
+            <div class="section__head">
+                <h2 id="sim-heading">What-If / Varsayımsal Model Senaryosu</h2>
+            </div>
+            <p class="warning warning--info">Bu araç varsayımsal senaryolar içindir. Model davranışını anlamaya yardımcı olur; müdahale, iyileştirme veya karar tavsiyesi değildir.</p>
+            <p class="warning warning--info">Bir özelliği değiştirmek, o özelliğin gecikmeye neden olduğunu kanıtlamaz. Model istatistiksel ilişkiler üzerinden çıktı üretir.</p>
+            <p class="warning warning--info">Bu ekran model girdileri üzerinde varsayımsal senaryolar oluşturur. Bazı kombinasyonlar gerçek bir süreç açılışını temsil etmeyebilir.</p>
+
+            <div id="simulation-no-prediction" class="empty-state empty-state--warn" style="display:none">
+                Senaryo oluşturmak için önce bu süreç için bir tahmin üretilmelidir.
+            </div>
+
+            <div id="simulation-form-wrap" style="display:none">
+                <article class="card">
+                    <div class="card__head">
+                        <h3 class="card__title">Senaryo Değişkenleri</h3>
+                        <span class="card__sub">Değiştirmek istediğiniz alanları doldurun; boş bıraktıklarınız orijinal değerini korur.</span>
+                    </div>
+                    <div id="simulation-override-fields" class="sim-fields"></div>
+                    <div style="margin-top:16px">
+                        <button type="button" id="sim-run-btn" class="btn btn--primary">Senaryoyu Çalıştır</button>
+                        <span id="sim-status" aria-live="polite" style="margin-left:12px;font-size:0.9rem;color:var(--color-text-muted)"></span>
+                    </div>
+                </article>
+            </div>
+
+            <div id="simulation-result" style="display:none">
+                <div class="sim-comparison">
+                    <article class="card">
+                        <div class="card__head"><h3 class="card__title">Orijinal Açılış Tahmini</h3></div>
+                        <dl class="meta-list">
+                            <div class="meta-list__row"><dt>Gecikme Olasılığı</dt><dd id="sim-orig-prob">—</dd></div>
+                            <div class="meta-list__row"><dt>Tahmini Süre</dt><dd id="sim-orig-hours">—</dd></div>
+                            <div class="meta-list__row"><dt>Karar</dt><dd id="sim-orig-decision">—</dd></div>
+                        </dl>
+                    </article>
+                    <article class="card">
+                        <div class="card__head"><h3 class="card__title">Varsayımsal Senaryo</h3></div>
+                        <dl class="meta-list">
+                            <div class="meta-list__row"><dt>Gecikme Olasılığı</dt><dd id="sim-new-prob">—</dd></div>
+                            <div class="meta-list__row"><dt>Tahmini Süre</dt><dd id="sim-new-hours">—</dd></div>
+                            <div class="meta-list__row"><dt>Karar</dt><dd id="sim-new-decision">—</dd></div>
+                            <div class="meta-list__row"><dt>Karar Eşiği</dt><dd id="sim-threshold">—</dd></div>
+                        </dl>
+                    </article>
+                </div>
+                <p id="sim-diff-text" class="sim-diff" style="margin-top:12px;font-size:0.95rem;color:var(--color-text)"></p>
+            </div>
+
+            <div id="simulation-error" class="empty-state empty-state--warn" style="display:none"></div>
+        </section>
+
+        <section id="feedback-panel" class="section" aria-labelledby="fb-heading">
+            <div class="section__head">
+                <h2 id="fb-heading">Geri Bildirim</h2>
+            </div>
+
+            <div id="feedback-no-prediction" class="empty-state" style="display:none">
+                Geri bildirim için bir tahmin gereklidir.
+            </div>
+            <div id="feedback-simulation" class="empty-state empty-state--warn" style="display:none">
+                Varsayımsal senaryo sonuçlarına geri bildirim verilemez.
+            </div>
+
+            <div id="feedback-accuracy-section" style="display:none">
+                <article class="card">
+                    <div class="card__head"><h3 class="card__title">Doğruluk</h3></div>
+                    <p class="section__hint">Doğruluk, tahminin gerçek süreç sonucuyla karşılaştırılmasıdır. Sistem tarafından otomatik değerlendirilir.</p>
+                    <dl class="meta-list">
+                        <div class="meta-list__row"><dt>Durum</dt><dd id="fb-accuracy-status">—</dd></div>
+                        <div class="meta-list__row"><dt>Tahmin</dt><dd id="fb-accuracy-prediction">—</dd></div>
+                        <div class="meta-list__row"><dt>Gerçek Sonuç</dt><dd id="fb-accuracy-actual">—</dd></div>
+                    </dl>
+                </article>
+            </div>
+
+            <div id="feedback-usefulness-section" style="display:none">
+                <article class="card">
+                    <div class="card__head">
+                        <h3 class="card__title">Fayda</h3>
+                        <span class="card__sub">Bu tahminin size ne kadar faydalı olduğunu belirtebilirsiniz.</span>
+                    </div>
+                    <label for="fb-usefulness-comment" class="sim-field__label">Yorum</label>
+                    <textarea id="fb-usefulness-comment" class="fb-textarea" rows="3" maxlength="5000" placeholder="Tahminin faydası hakkında yorumunuz..."></textarea>
+                    <div style="margin-top:12px;display:flex;align-items:center;gap:12px">
+                        <button type="button" id="fb-usefulness-btn" class="btn btn--primary">Gönder</button>
+                        <span id="fb-usefulness-status" aria-live="polite" style="font-size:0.9rem;color:var(--color-text-muted)"></span>
+                    </div>
+                </article>
+            </div>
+
+            <div id="feedback-error" class="empty-state empty-state--warn" style="display:none"></div>
+        </section>
+
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/process_detail.js"></script>
+{% endblock %}

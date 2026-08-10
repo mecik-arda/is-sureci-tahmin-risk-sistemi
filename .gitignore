@@ -1,0 +1,44 @@
+# Yerel veri ve artifact dosyaları harici ortama çıkarılmaz
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+artifacts/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Ortam değişkenleri
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Gecici dosyalar
+*.tmp
+.pytest_tmp/
+profile_output.txt
+*.log
+train_log.txt
+
+# Buyuk referans dosyalar
+boston_api.json
+
+# Proje dokumantasyonu (sadece README yeterli)
+dosyalar/
+docs/
+
+# Veri sozlugu
+Data_Dictionary_for_Complaint_Dataset.csv
+
+# Analiz scriptleri
+profile_*.py
+
+# Sonuc raporlari ve ciktilar
+ml/results/

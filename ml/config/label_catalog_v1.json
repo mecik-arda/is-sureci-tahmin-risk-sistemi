@@ -1,0 +1,17 @@
+{
+  "label_catalog_version": "1.0.0",
+  "description": "V1 feature etiketleri. Kategori deger etiketleri Faz 6 scope.",
+  "created_at": "2026-08-07",
+  "feature_labels": {
+    "source": "Bildirim Kaynagi",
+    "subject": "Konu",
+    "reason": "Neden",
+    "type": "Surec Tipi",
+    "neighborhood": "Mahalle",
+    "open_month": "Acilis Ayi",
+    "open_weekday": "Acilis Gunu (Haftanin)",
+    "open_hour": "Acilis Saati",
+    "is_weekend": "Haftasonu Acilis",
+    "sla_duration_hours": "SLA Suresi (saat)"
+  }
+}

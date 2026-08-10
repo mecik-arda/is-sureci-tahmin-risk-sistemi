@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Panel - İş Süreci Tahmin ve Gecikme Risk Sistemi{% endblock %}
+
+{% block content %}
+    <h1>Panel</h1>
+    <p class="page-lead">Tahmin ve gerçekleşen sonuçlar ayrı ayrı sunulmuştur. İki veri kümesi karıştırılmaz.</p>
+
+    <section id="prediction-section" class="section" aria-labelledby="prediction-heading">
+        <div class="section__head">
+            <h2 id="prediction-heading">Tahmin Görünümü</h2>
+            <span class="section__tag section__tag--blue">Model çıktısı</span>
+        </div>
+        <p class="section__hint">Bu kartlar yalnızca model tarafından üretilen tahminleri gösterir.</p>
+
+        <div class="kpi-grid">
+            <article class="kpi-card">
+                <span class="kpi-card__label">Tahmin Üretilen Süreç</span>
+                <span class="kpi-card__value" id="kpi-total-predictions">&mdash;</span>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-card__label">Yüksek Gecikme Riski Tahmin</span>
+                <span class="kpi-card__value kpi-card__value--danger" id="kpi-high-risk">&mdash;</span>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-card__label">Ortalama Gecikme Olasılığı</span>
+                <span class="kpi-card__value" id="kpi-avg-prob">&mdash;</span>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-card__label">Ortalama Tahmini Süre</span>
+                <span class="kpi-card__value" id="kpi-avg-hours">&mdash;</span>
+            </article>
+        </div>
+
+        <article class="card">
+            <div class="card__head">
+                <h3 class="card__title">Günlük Tahmin Hacmi</h3>
+                <span class="card__sub" id="prediction-chart-range"></span>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="prediction-chart" width="900" height="320" aria-label="Günlük tahmin hacmi grafiği"></canvas>
+                <div id="prediction-chart-empty" class="empty-state" style="display:none">
+                    Günlük tahmin verisi bulunamadı.
+                </div>
+            </div>
+        </article>
+
+    </section>
+
+    <section id="actual-section" class="section" aria-labelledby="actual-heading">
+        <div class="section__head">
+            <h2 id="actual-heading">Gerçekleşen Sonuçlar</h2>
+            <span class="section__tag section__tag--green">Operasyon çıktısı</span>
+        </div>
+        <p class="section__hint">Bu kartlar modelden bağımsız olarak gerçekte gerçekleşen süreç çıktılarını gösterir.</p>
+
+        <div class="kpi-grid">
+            <article class="kpi-card">
+                <span class="kpi-card__label">Sonuçlanan Süreç</span>
+                <span class="kpi-card__value" id="kpi-completed">&mdash;</span>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-card__label">SLA İçinde Tamamlanan</span>
+                <span class="kpi-card__value kpi-card__value--success" id="kpi-on-time">&mdash;</span>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-card__label">Gerçek Geciken</span>
+                <span class="kpi-card__value kpi-card__value--danger" id="kpi-delayed">&mdash;</span>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-card__label">Gerçek Gecikme Oranı</span>
+                <span class="kpi-card__value" id="kpi-delay-rate">&mdash;</span>
+            </article>
+        </div>
+
+        <article class="card">
+            <div class="card__head">
+                <h3 class="card__title">Süreç Türü Dağılımı</h3>
+            </div>
+            <div class="chart-wrap chart-wrap--compact">
+                <canvas id="process-type-chart" width="900" height="320" aria-label="Süreç türü dağılımı grafiği"></canvas>
+                <div id="process-type-chart-empty" class="empty-state" style="display:none">Süreç türü dağılım verisi bulunamadı.</div>
+            </div>
+        </article>
+    </section>
+
+    <div id="dashboard-empty" class="empty-state" style="display:none">
+        Gösterilecek tahmin veya sonuç verisi bulunamadı.
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/dashboard.js"></script>
+{% endblock %}

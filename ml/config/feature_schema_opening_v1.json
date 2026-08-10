@@ -1,0 +1,77 @@
+{
+  "feature_schema_version": "opening-v1",
+  "canonical_mapping_version": "1.0.0",
+  "snapshot_type": "opening",
+  "description": "V1 acilis aninda kullanilacak leakage-safe feature seti. Tum featurelar process olusum aninda (open_dt) kullanilabilir durumdadir.",
+  "categorical_features": [
+    "source",
+    "subject",
+    "reason",
+    "type",
+    "neighborhood"
+  ],
+  "numeric_features": [
+    "open_month",
+    "open_weekday",
+    "open_hour",
+    "is_weekend",
+    "sla_duration_hours"
+  ],
+  "feature_derivations": {
+    "source": {
+      "from": "source",
+      "transform": "canonical_map"
+    },
+    "subject": {
+      "from": "subject",
+      "transform": "canonical_map"
+    },
+    "reason": {
+      "from": "reason",
+      "transform": "canonical_map"
+    },
+    "type": {
+      "from": "type",
+      "transform": "canonical_map"
+    },
+    "neighborhood": {
+      "from": "neighborhood",
+      "transform": "canonical_map"
+    },
+    "open_month": {
+      "from": "open_dt",
+      "transform": "datetime.month",
+      "range": [1, 12]
+    },
+    "open_weekday": {
+      "from": "open_dt",
+      "transform": "datetime.weekday",
+      "range": [0, 6]
+    },
+    "open_hour": {
+      "from": "open_dt",
+      "transform": "datetime.hour",
+      "range": [0, 23]
+    },
+    "is_weekend": {
+      "from": "open_dt",
+      "transform": "weekday >= 5",
+      "range": [0, 1]
+    },
+    "sla_duration_hours": {
+      "from": ["sla_target_dt", "open_dt"],
+      "transform": "(sla_target_dt - open_dt).total_seconds() / 3600"
+    }
+  },
+  "excluded_features": {
+    "department": "opening_time_immutability_unproven",
+    "queue": "opening_time_immutability_unproven",
+    "latitude": "deferred_to_v2_ablation",
+    "longitude": "deferred_to_v2_ablation",
+    "case_status": "leakage_outcome_field",
+    "on_time": "leakage_outcome_field",
+    "closure_reason": "leakage_outcome_field",
+    "closed_dt": "leakage_outcome_field",
+    "completed_at": "leakage_outcome_field"
+  }
+}

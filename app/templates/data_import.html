@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Veri Aktar - İş Süreci Tahmin ve Gecikme Risk Sistemi{% endblock %}
+
+{% block content %}
+    <h1>Veri Aktar</h1>
+    <p class="page-lead">CSV veya XLSX dosyanızı yerel olarak aktarın. Dosya yalnız bu bilgisayarda işlenir; duplicate, mapping ve veri kalite kontrolleri otomatik uygulanır.</p>
+
+    <section class="section" aria-labelledby="import-heading">
+        <div class="section__head"><h2 id="import-heading">Dosya Seçimi</h2></div>
+        <article class="card">
+            <form id="import-form">
+                <div class="sim-field">
+                    <label for="import-file" class="sim-field__label">CSV veya XLSX dosyası</label>
+                    <input id="import-file" class="sim-field__input" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
+                </div>
+                <p class="section__hint">En fazla 512 MB. Zorunlu alanlar: <code>case_enquiry_id</code> ve <code>open_dt</code>.</p>
+                <button type="submit" id="import-submit" class="btn btn--primary">Dosyayı Aktar</button>
+                <span id="import-status" aria-live="polite"></span>
+            </form>
+        </article>
+    </section>
+
+    <div id="import-error" class="empty-state empty-state--warn" style="display:none"></div>
+
+    <section id="import-result" class="section" aria-labelledby="import-result-heading" style="display:none">
+        <div class="section__head"><h2 id="import-result-heading">Aktarım Sonucu</h2></div>
+        <article class="card"><dl class="meta-list">
+            <div class="meta-list__row"><dt>Durum</dt><dd id="import-result-status">—</dd></div>
+            <div class="meta-list__row"><dt>Toplam Satır</dt><dd id="import-total-rows">—</dd></div>
+            <div class="meta-list__row"><dt>Yeni Kayıt</dt><dd id="import-inserted-rows">—</dd></div>
+            <div class="meta-list__row"><dt>Güncellenen</dt><dd id="import-updated-rows">—</dd></div>
+            <div class="meta-list__row"><dt>Tekrar Atlanan</dt><dd id="import-skipped-rows">—</dd></div>
+            <div class="meta-list__row"><dt>Karantina</dt><dd id="import-quarantined-rows">—</dd></div>
+            <div class="meta-list__row"><dt>Hata Satırı</dt><dd id="import-error-rows">—</dd></div>
+            <div class="meta-list__row"><dt>Uyarı</dt><dd id="import-warning-count">—</dd></div>
+            <div class="meta-list__row"><dt>İçe Aktarma No</dt><dd id="import-run-id">—</dd></div>
+        </dl></article>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/data_import.js"></script>
+{% endblock %}

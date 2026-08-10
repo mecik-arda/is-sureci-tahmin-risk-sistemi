@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}İş Süreci Tahmin ve Gecikme Risk Sistemi{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="brand" href="/">
+                <span class="brand__mark"></span>
+                <span class="brand__name">İş Süreci Tahmin ve Gecikme Risk Sistemi</span>
+            </a>
+            <nav class="nav" aria-label="Ana navigasyon">
+                <a class="nav__link{% if page == 'dashboard' %} nav__link--active{% endif %}" href="/">Panel</a>
+                <a class="nav__link{% if page == 'processes' or page == 'process_detail' %} nav__link--active{% endif %}" href="/processes">Süreç Listesi</a>
+                <a class="nav__link{% if page == 'data_import' %} nav__link--active{% endif %}" href="/data-import">Veri Aktar</a>
+                <a class="nav__link{% if page == 'model_performance' %} nav__link--active{% endif %}" href="/model-performance">Model Performansı</a>
+                <a class="nav__link{% if page == 'model_monitoring' %} nav__link--active{% endif %}" href="/model-monitoring">Model İzleme</a>
+                <a class="nav__link{% if page == 'data_quality' %} nav__link--active{% endif %}" href="/data-quality">Veri Kalitesi</a>
+            </nav>
+        </div>
+    </header>
+
+    <div id="banner-area" class="banner-area" aria-live="polite"></div>
+
+    <main class="main">
+        <div class="container">
+            {% block content %}{% endblock %}
+            <noscript><div class="empty-state empty-state--warn">Bu uygulamanın güncel verileri gösterebilmesi için JavaScript etkin olmalıdır.</div></noscript>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <span>AI Destekli İş Süreci Tahmin ve Gecikme Risk Sistemi</span>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

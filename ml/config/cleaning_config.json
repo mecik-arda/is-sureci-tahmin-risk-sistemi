@@ -1,0 +1,42 @@
+{
+  "_description": "Veri temizleme konfigurasyonu — clean_data.py tarafindan kullanilir.",
+  "rules": {
+    "cap_outliers": {
+      "enabled": false,
+      "_note": "IQR yontemiyle aykiri degerleri cap'le. enabled=false ise sadece raporlanir.",
+      "columns": ["total_duration_hours"],
+      "method": "iqr",
+      "iqr_multiplier": 1.5
+    },
+    "fill_missing_categorical": {
+      "enabled": true,
+      "_note": "Eksik kategorik degerleri 'missing' olarak isaretle (zaten yapiliyor).",
+      "fill_value": "missing"
+    },
+    "fill_missing_numeric": {
+      "enabled": false,
+      "_note": "Eksik numerik degerleri median/mean ile doldurma (opsiyonel).",
+      "method": "median",
+      "columns": []
+    },
+    "remove_invalid_dates": {
+      "enabled": true,
+      "_note": "Gecersiz tarihli kayitlari data_quality_issue olarak isaretle.",
+      "min_year": 2020,
+      "max_year": 2026
+    },
+    "remove_negative_durations": {
+      "enabled": true,
+      "_note": "Negatif sureli kayitlar eğitim disi birakilir."
+    },
+    "deduplicate": {
+      "enabled": false,
+      "_note": "external_id bazinda tam mukerer kayitlari tespit et (silme/banlama yapilmaz)."
+    }
+  },
+  "report": {
+    "output_dir": "artifacts/{mode}/data_quality",
+    "format": "json",
+    "include_before_after_comparison": true
+  }
+}

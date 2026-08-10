@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Süreç Listesi - İş Süreci Tahmin ve Gecikme Risk Sistemi{% endblock %}
+
+{% block content %}
+    <h1>Süreç Listesi</h1>
+    <p class="page-lead">Yalnızca aktif model kapsamındaki süreçler ve en son başarıya ulaşan açılış tahminleri listelenir.</p>
+
+    <form id="filter-bar" class="filter-bar" aria-label="Süreç filtreleri">
+        <div class="filter-bar__group">
+            <label for="status-filter" class="filter-bar__label">Durum</label>
+            <select id="status-filter" name="status" class="filter-bar__select">
+                <option value="">Tümü</option>
+                <option value="open">Açık</option>
+                <option value="closed">Kapalı</option>
+            </select>
+        </div>
+        <div class="filter-bar__group">
+            <label for="risk-filter" class="filter-bar__label">Risk</label>
+            <select id="risk-filter" name="risk" class="filter-bar__select">
+                <option value="">Tümü</option>
+                <option value="high_risk">Yüksek Risk</option>
+                <option value="low_risk">Düşük Risk</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn--primary">Filtrele</button>
+        <button type="button" id="filter-reset" class="btn btn--ghost">Temizle</button>
+        <button type="button" id="batch-predict" class="btn btn--ghost" disabled>Seçili Süreçler İçin Tahmin Üret</button>
+        <button type="button" id="export-batch" class="btn btn--ghost" style="display:none">Sonuçları Excel'e Aktar</button>
+        <span id="batch-status" aria-live="polite"></span>
+    </form>
+
+    <div id="model-context" class="model-context" aria-live="polite">
+        <span class="model-context__label">Aktif model:</span>
+        <span id="model-context-detail" class="model-context__detail">Yükleniyor...</span>
+    </div>
+
+    <article class="card card--flush">
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Süreç No</th>
+                        <th scope="col"><span class="sr-only">Seç</span></th>
+                        <th scope="col">Tür</th>
+                        <th scope="col">Güncel Durum</th>
+                        <th scope="col">Gecikme Olasılığı</th>
+                        <th scope="col">Risk Skoru</th>
+                        <th scope="col">Tahmin</th>
+                        <th scope="col">Tahmini Süre</th>
+                    </tr>
+                </thead>
+                <tbody id="process-tbody"></tbody>
+            </table>
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display:none">
+            Henüz süreç kaydı bulunamadı.
+        </div>
+
+        <div id="loading-state" class="empty-state">Kayıtlar yükleniyor...</div>
+
+        <nav id="pagination" class="pagination" aria-label="Sayfalama" style="display:none">
+            <button type="button" id="prev-page" class="btn btn--ghost">&laquo; Önceki</button>
+            <span id="page-info" class="pagination__info"></span>
+            <button type="button" id="next-page" class="btn btn--ghost">Sonraki &raquo;</button>
+        </nav>
+    </article>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/process_list.js"></script>
+{% endblock %}

@@ -1,0 +1,1 @@
+"""Uygulamanın kök paketi."""

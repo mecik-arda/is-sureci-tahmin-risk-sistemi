@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Model Performansı - İş Süreci Tahmin ve Gecikme Risk Sistemi{% endblock %}
+
+{% block content %}
+    <h1>Model Performansı</h1>
+
+    <div id="perf-loading" class="empty-state">Performans bilgileri yükleniyor...</div>
+
+    <div id="perf-error" class="empty-state empty-state--warn" style="display:none"></div>
+
+    <div id="perf-body" style="display:none">
+
+        <section id="perf-metadata" class="section" aria-labelledby="perf-meta-heading">
+            <div class="section__head"><h2 id="perf-meta-heading">Model Bilgisi</h2></div>
+            <article class="card">
+                <dl class="meta-list">
+                    <div class="meta-list__row"><dt>Model Sürümü</dt><dd id="perf-model-version">—</dd></div>
+                    <div class="meta-list__row"><dt>Model Tipi</dt><dd id="perf-model-type">—</dd></div>
+                    <div class="meta-list__row"><dt>Aşama</dt><dd id="perf-stage">—</dd></div>
+                    <div class="meta-list__row"><dt>Karar Eşiği</dt><dd id="perf-threshold">—</dd></div>
+                    <div class="meta-list__row"><dt>Kalibrasyon</dt><dd id="perf-calibration">—</dd></div>
+                </dl>
+            </article>
+            <article id="perf-confusion" class="card" style="display:none">
+                <div class="card__head"><h3 class="card__title">Karmaşıklık Matrisi</h3></div>
+                <div class="table-wrap">
+                    <table class="data-table data-table--pairs">
+                        <thead><tr><th scope="col">Gerçek / Tahmin</th><th scope="col">Gecikme Yok</th><th scope="col">Gecikme Var</th></tr></thead>
+                        <tbody>
+                            <tr><th scope="row">Gecikme Yok</th><td id="perf-tn">—</td><td id="perf-fp">—</td></tr>
+                            <tr><th scope="row">Gecikme Var</th><td id="perf-fn">—</td><td id="perf-tp">—</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+            <div id="perf-confusion-empty" class="empty-state" style="display:none">Karmaşıklık matrisi verisi bu model bundle'ında bulunamadı.</div>
+        </section>
+
+        <section id="perf-classification" class="section" aria-labelledby="perf-clf-heading">
+            <div class="section__head">
+                <h2 id="perf-clf-heading">Sınıflandırma (Validation)</h2>
+            </div>
+            <p class="warning warning--info">Bu metrikler Validation (Eylül 2024) verisi üzerinden hesaplanmıştır. Nihai Test performansını temsil etmez.</p>
+            <article class="card">
+                <dl class="meta-list">
+                    <div class="meta-list__row"><dt>PR-AUC</dt><dd id="perf-pr-auc">—</dd></div>
+                    <div class="meta-list__row"><dt>ROC-AUC</dt><dd id="perf-roc-auc">—</dd></div>
+                    <div class="meta-list__row"><dt>Brier</dt><dd id="perf-brier">—</dd></div>
+                    <div class="meta-list__row"><dt>F1</dt><dd id="perf-f1">—</dd></div>
+                    <div class="meta-list__row"><dt>Kesinlik (Precision)</dt><dd id="perf-precision">—</dd></div>
+                    <div class="meta-list__row"><dt>Duyarlılık (Recall)</dt><dd id="perf-recall">—</dd></div>
+                    <div class="meta-list__row"><dt>Validation Örnek Sayısı</dt><dd id="perf-clf-count">—</dd></div>
+                </dl>
+            </article>
+        </section>
+
+        <section id="perf-regression" class="section" aria-labelledby="perf-reg-heading">
+            <div class="section__head">
+                <h2 id="perf-reg-heading">Regresyon (Validation)</h2>
+            </div>
+            <p class="warning warning--info">Bu metrikler Validation (Eylül 2024) verisi üzerinden hesaplanmıştır. Nihai Test performansını temsil etmez.</p>
+            <article class="card">
+                <dl class="meta-list">
+                    <div class="meta-list__row"><dt>MAE</dt><dd id="perf-mae">—</dd></div>
+                    <div class="meta-list__row"><dt>MedianAE</dt><dd id="perf-medae">—</dd></div>
+                    <div class="meta-list__row"><dt>RMSE</dt><dd id="perf-rmse">—</dd></div>
+                    <div class="meta-list__row"><dt>p90 AE</dt><dd id="perf-p90ae">—</dd></div>
+                    <div class="meta-list__row"><dt>Validation Örnek Sayısı</dt><dd id="perf-reg-count">—</dd></div>
+                </dl>
+            </article>
+        </section>
+
+        <section id="perf-cv" class="section" aria-labelledby="perf-cv-heading">
+            <div class="section__head">
+                <h2 id="perf-cv-heading">Train Time-Aware CV Sonuçları</h2>
+            </div>
+            <p class="section__hint">CV metrikleri Train (Ocak–Ağustos 2024) verisi üzerinde time-aware TimeSeriesSplit ile hesaplanmıştır. Hiperparametre arama ve model geliştirme sürecinin referansıdır; nihai bundle seçimi Validation sonuçlarına göre yapılmıştır.</p>
+
+            <article class="card">
+                <div class="card__head"><h3 class="card__title">Sınıflandırma CV</h3></div>
+                <dl class="meta-list">
+                    <div class="meta-list__row"><dt>PR-AUC (ortalama)</dt><dd id="perf-cv-clf-mean">—</dd></div>
+                    <div class="meta-list__row"><dt>PR-AUC (std)</dt><dd id="perf-cv-clf-std">—</dd></div>
+                </dl>
+            </article>
+
+            <article class="card">
+                <div class="card__head"><h3 class="card__title">Regresyon CV</h3></div>
+                <dl class="meta-list">
+                    <div class="meta-list__row"><dt>MAE (ortalama)</dt><dd id="perf-cv-reg-mean">—</dd></div>
+                    <div class="meta-list__row"><dt>MAE (std)</dt><dd id="perf-cv-reg-std">—</dd></div>
+                </dl>
+            </article>
+        </section>
+
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/model_performance.js"></script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Veri Kalitesi - İş Süreci Tahmin ve Gecikme Risk Sistemi{% endblock %}
+
+{% block content %}
+    <h1>Veri Kalitesi</h1>
+    <p class="page-lead">İçe aktarma işlemlerinde kaydedilen veri kalite sonuçları yerel denetim kayıtlarından sunulur.</p>
+    <div id="quality-loading" class="empty-state">Veri kalite bilgileri yükleniyor...</div>
+    <div id="quality-error" class="empty-state empty-state--warn" style="display:none"></div>
+    <div id="quality-body" style="display:none">
+        <div class="kpi-grid">
+            <article class="kpi-card"><span class="kpi-card__label">İçe Aktarma</span><span id="quality-run-count" class="kpi-card__value">—</span></article>
+            <article class="kpi-card"><span class="kpi-card__label">Toplam Satır</span><span id="quality-total-rows" class="kpi-card__value">—</span></article>
+            <article class="kpi-card"><span class="kpi-card__label">Karantina Satırı</span><span id="quality-quarantined" class="kpi-card__value">—</span></article>
+            <article class="kpi-card"><span class="kpi-card__label">Kayıtlı Sorun</span><span id="quality-issue-count" class="kpi-card__value">—</span></article>
+        </div>
+        <section class="section" aria-labelledby="quality-issues-heading">
+            <div class="section__head"><h2 id="quality-issues-heading">Sorun Kodları</h2></div>
+            <article class="card card--flush"><div class="table-wrap"><table class="data-table"><thead><tr><th scope="col">Kod</th><th scope="col">Sayı</th></tr></thead><tbody id="quality-issues"></tbody></table></div><div id="quality-issues-empty" class="empty-state" style="display:none">Kayıtlı veri kalite sorunu bulunamadı.</div></article>
+        </section>
+        <section class="section" aria-labelledby="quality-runs-heading">
+            <div class="section__head"><h2 id="quality-runs-heading">Son İçe Aktarmalar</h2></div>
+            <article class="card card--flush"><div class="table-wrap"><table class="data-table"><thead><tr><th scope="col">Dosya</th><th scope="col">Durum</th><th scope="col">Satır</th><th scope="col">Karantina</th><th scope="col">Hata</th><th scope="col">Tamamlanma</th></tr></thead><tbody id="quality-runs"></tbody></table></div><div id="quality-runs-empty" class="empty-state" style="display:none">İçe aktarma kaydı bulunamadı.</div></article>
+        </section>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/data_quality.js"></script>
+{% endblock %}

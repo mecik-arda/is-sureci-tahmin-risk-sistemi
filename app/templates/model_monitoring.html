@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Model İzleme - İş Süreci Tahmin ve Gecikme Risk Sistemi{% endblock %}
+
+{% block content %}
+    <h1>Model İzleme</h1>
+    <p class="page-lead">Aktif model bundle ve çalışma zamanı analiz önbelleği yerel olarak izlenir.</p>
+    <div id="monitoring-loading" class="empty-state">Model izleme bilgileri yükleniyor...</div>
+    <div id="monitoring-error" class="empty-state empty-state--warn" style="display:none"></div>
+    <div id="monitoring-body" style="display:none">
+        <section class="section" aria-labelledby="monitoring-model-heading">
+            <div class="section__head"><h2 id="monitoring-model-heading">Aktif Model</h2></div>
+            <article class="card"><dl class="meta-list">
+                <div class="meta-list__row"><dt>Sürüm</dt><dd id="monitor-version">—</dd></div>
+                <div class="meta-list__row"><dt>Tip</dt><dd id="monitor-type">—</dd></div>
+                <div class="meta-list__row"><dt>Eğitim Zamanı</dt><dd id="monitor-trained-at">—</dd></div>
+                <div class="meta-list__row"><dt>Aşama</dt><dd id="monitor-stage">—</dd></div>
+                <div class="meta-list__row"><dt>Feature Şeması</dt><dd id="monitor-schema">—</dd></div>
+                <div class="meta-list__row"><dt>Kanonik Mapping</dt><dd id="monitor-mapping">—</dd></div>
+                <div class="meta-list__row"><dt>Karar Eşiği</dt><dd id="monitor-threshold">—</dd></div>
+                <div class="meta-list__row"><dt>Artifact SHA-256</dt><dd id="monitor-hash">—</dd></div>
+            </dl></article>
+        </section>
+        <section class="section" aria-labelledby="monitoring-cache-heading">
+            <div class="section__head"><h2 id="monitoring-cache-heading">Analiz Önbelleği</h2></div>
+            <article class="card"><dl class="meta-list">
+                <div class="meta-list__row"><dt>Oluşturulma</dt><dd id="monitor-cache-built-at">—</dd></div>
+                <div class="meta-list__row"><dt>Dataset Build Sayısı</dt><dd id="monitor-cache-build-count">—</dd></div>
+                <div class="meta-list__row"><dt>Cache Hit Sayısı</dt><dd id="monitor-cache-hit-count">—</dd></div>
+                <div class="meta-list__row"><dt>Önbellekteki Satır</dt><dd id="monitor-cache-rows">—</dd></div>
+                <div class="meta-list__row"><dt>Bellek Kullanımı</dt><dd id="monitor-cache-memory">—</dd></div>
+            </dl></article>
+        </section>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="/static/js/model_monitoring.js"></script>
+{% endblock %}
